@@ -21,3 +21,4 @@ class MainApp(QtWidgets.QMainWindow, mainDesign.Ui_MainWindow):
 # populate schedule types
         self.schedule_types = dict()
  for name, obj in inspect.getmembers(ScheduleWidgets):
+if inspect.isclass(obj):
