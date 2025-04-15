@@ -22,3 +22,4 @@ class MainApp(QtWidgets.QMainWindow, mainDesign.Ui_MainWindow):
         self.schedule_types = dict()
  for name, obj in inspect.getmembers(ScheduleWidgets):
 if inspect.isclass(obj):
+self.scheduleTypesCombo.addItem(name)
