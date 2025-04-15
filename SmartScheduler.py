@@ -19,3 +19,4 @@ class MainApp(QtWidgets.QMainWindow, mainDesign.Ui_MainWindow):
         self.valence_map = Widgets.ValveMapWidget(self.valveMapContents)
         self.valveMapContents.layout().addWidget(self.valence_map)
 # populate schedule types
+        self.schedule_types = dict()
