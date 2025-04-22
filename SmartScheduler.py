@@ -102,3 +102,13 @@ def my_exception_hook(exctype, value, traceback):
 
 # Set the exception hook to our wrapping function
 sys.excepthook = my_exception_hook
+
+
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    form = MainApp()
+    form.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
