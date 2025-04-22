@@ -24,3 +24,15 @@ class MainApp(QtWidgets.QMainWindow, mainDesign.Ui_MainWindow):
 if inspect.isclass(obj):
 self.scheduleTypesCombo.addItem(name)
 self.schedule_types[name] = obj
+ # populate schedule types
+        self.schedule_types = dict()
+        for name, obj in inspect.getmembers(ScheduleWidgets):
+            if inspect.isclass(obj):
+                self.scheduleTypesCombo.addItem(name)
+                self.schedule_types[name] = obj
+
+        # initialise schedule model
+        self.scheduleView.setModel(ScheduleView.ScheduleModel([], [[]]))
+
+        # add function bindings
+        self.actionSave.triggered.connect(self.save_schedule)
