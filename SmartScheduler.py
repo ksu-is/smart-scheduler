@@ -36,3 +36,25 @@ self.schedule_types[name] = obj
 
         # add function bindings
         self.actionSave.triggered.connect(self.save_schedule)
+
+        self.generateScheduleButton.clicked.connect(self.generate)
+
+        self.scheduleTypesCombo.activated.connect(self.select_schedule_type)
+
+        self.scheduleView.selectionModel().selectionChanged.connect(self.draw_pulse)
+
+    def generate(self):
+        # get the schedule data and headers
+        self.schedule, self.schedule_headers = self.current_schedule_type.generate_schedule(self.valence_map.get_valence_map())
+
+        # post to the schedule view
+        self.schedule_model = ScheduleView.ScheduleModel(self.schedule_headers, self.schedule, parent=self)
+        self.scheduleView.setModel(self.schedule_model)
+        self.scheduleView.selectionModel().selectionChanged.connect(self.draw_pulse)
+
+    def select_schedule_type(self):
+        schedule_name = self.scheduleTypesCombo.currentText()
+
+        if self.current_schedule_type is not None:
+            self.scheduleParamsContents.layout().removeWidget(self.current_schedule_type)
+            self.current_schedule_type.deleteLater()
