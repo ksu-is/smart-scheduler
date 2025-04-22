@@ -58,3 +58,47 @@ self.schedule_types[name] = obj
         if self.current_schedule_type is not None:
             self.scheduleParamsContents.layout().removeWidget(self.current_schedule_type)
             self.current_schedule_type.deleteLater()
+self.current_schedule_type = self.schedule_types[schedule_name]()
+        self.scheduleParamsContents.layout().addWidget(self.current_schedule_type)
+
+        self.scheduleView.setModel(ScheduleView.ScheduleModel([], [[]]))
+
+    def draw_pulse(self):
+        trial = self.schedule[self.scheduleView.selectionModel().selectedRows()[0].row()]
+        params = self.current_schedule_type.pulse_parameters(trial)
+
+        pulses, t = PulseInterface.make_pulse(20000.0, 0.0, 0.0, params)
+
+        self.pulseView.plotItem.clear()
+        for p, pulse in enumerate(pulses):
+            color = ColorMap.c_list[self.valence_map.get_valence_map()[p]]
+            self.pulseView.plotItem.plot(t, np.array(pulse) - (p*1.1), pen=color)
+
+    def save_schedule(self):
+        params = list()
+        for trial in self.schedule:
+            params.append(self.current_schedule_type.pulse_parameters(trial))
+
+        fname, suff = QtWidgets.QFileDialog.getSaveFileName(self, "Save Schedule", '', "Schedule File (*.schedule)")
+        try:
+            with open(fname, 'wb') as fn:
+                pickle.dump({'schedule': self.schedule,
+                             'headers': self.schedule_headers,
+                             'params': params}, fn)
+        except:
+            pass
+
+
+# Back up the reference to the exceptionhook
+sys._excepthook = sys.excepthook
+
+
+def my_exception_hook(exctype, value, traceback):
+    # Print the error and traceback
+    print(exctype, value, traceback)
+    # Call the normal Exception hook after
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+
+# Set the exception hook to our wrapping function
+sys.excepthook = my_exception_hook
